@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="std">
+
+    <select id="get_no" resultType="Student.vo.stdVO" parameterType="String">
+        select * from std_t
+        where stdno = #{value}
+    </select>
+
+    <!-- stdno를 통해 2개의 테이블 연결하여 강의명, 강사명, 시작date, 강의index 따와야 됨.-->
+    <select id="get_total" resultType="Student.vo.totalDTO" parameterType="String">
+        SELECT ls.lec_name, la.ad_name, la.ad_sdate, la.lec_no
+        FROM std_t s
+        INNER JOIN lec_std_t ls ON s.stdno = ls.stdno
+        INNER JOIN lec_adm_t la ON ls.lec_no = la.lec_no
+        WHERE s.stdno = #{stdno}
+    </select>
+    <!-- stdno를 통해서 시험 정보들 불러와야됨. -->
+    <select id="get_test" resultType="Student.vo.testDTO" parameterType="String">
+        SELECT ls.lec_name, t.test_name, ls.lec_no, la.ad_name
+        FROM std_t s
+        INNER JOIN lec_std_t ls ON s.stdno = ls.stdno
+        INNER JOIN lec_adm_t la ON ls.lec_no = la.lec_no
+        INNER JOIN test_t t ON ls.lec_no = t.lec_no
+        WHERE s.stdno = #{stdno}
+    </select>
+
+    <select id="update_mail" resultType="Student.vo.stdVO" parameterType="String">
+        UPDATE std_t
+        SET std_email = #{std_email}
+        WHERE stdno = #{stdno}
+    </select>
+    <select id="update_phone" resultType="Student.vo.stdVO" parameterType="String">
+        UPDATE std_t
+        SET std_phone = #{std_phone}
+        WHERE stdno = #{stdno}
+    </select>
+    <select id="update_add" resultType="Student.vo.stdVO" parameterType="String">
+        UPDATE std_t
+        SET std_address = #{std_address}
+        WHERE stdno = #{stdno}
+    </select>
+
+</mapper>

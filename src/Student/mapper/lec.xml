@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lec">
+
+<!--    <select id="get_all" resultType="Student.vo.stdVO" parameterType="String">-->
+<!--        select * from std_t-->
+<!--        where stdno = #{value}-->
+<!--    </select>-->
+
+    <select id="get_lec" resultType="Student.vo.lecVO" parameterType="String">
+        SELECT a.ad_name, l.lec_no, l.lec_name, l.lec_info, l.lec_sdate, l.lec_edate, l.lec_limit
+        FROM lec_t l
+        INNER JOIN admin_t a ON a.adno = l.adno
+        WHERE l.lec_no = #{value}
+
+    </select>
+
+
+</mapper>
