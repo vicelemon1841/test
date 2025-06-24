@@ -2,8 +2,16 @@ package Student.vo;
 
 public class testDTO {
     //시험 탭의 table 정보들을 불러와야됨.
-    private String lec_name, ad_name, lec_no, test_name;
+    private String lec_name, ad_name, lec_no, test_name, test_idx;
     // 강의명, 강사명, 강의코드, 시험명
+
+    public String getTest_idx() {
+        return test_idx;
+    }
+
+    public void setTest_idx(String test_idx) {
+        this.test_idx = test_idx;
+    }
 
     public String getLec_name() {
         return lec_name;

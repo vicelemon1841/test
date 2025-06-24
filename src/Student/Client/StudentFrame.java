@@ -52,16 +52,13 @@ public class StudentFrame extends JFrame {
     private JTable jTable1;
     private JTable jTable2;
     private JButton jButton1;
+
+    JButton logout_bt;
+    JButton exit_bt;
+    JLabel lb_t;
+    JPanel title;
     public StudentFrame() {
-//        m_bar = new JMenuBar();
-//        menu = new JMenu("로그아웃");
-////        m_exit = new JMenuItem("로그아웃");
-//
-////
-////        menu.add(m_exit);
-//
-//        m_bar.add(menu);
-//        this.setJMenuBar(m_bar);
+
         //======================= 화면 구성
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -89,7 +86,7 @@ public class StudentFrame extends JFrame {
         //화면 구성
         initComponents();
 
-        this.setBounds(300,100,600,600);
+        this.setBounds(300,100,600,700);
         this.setVisible(true);
 
         try {
@@ -165,7 +162,37 @@ public class StudentFrame extends JFrame {
                 }
             }
         });
+        // 시험 응시 버튼 리스너
+        jTable2.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = jTable2.rowAtPoint(e.getPoint());
+                int col = jTable2.columnAtPoint(e.getPoint());
 
+                if (col == 5) { // 버튼 열
+                    String name = jTable2.getValueAt(row, 0).toString();
+                    JOptionPane.showMessageDialog(StudentFrame.this, name + " 클릭됨!");
+                    System.out.println("응시 버튼 클릭");
+                }
+            }
+        });
+
+        // 종료, 로그아웃 버튼 리스너
+        exit_bt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //종료 버튼 클릭 시 전체 창 종료
+                System.exit(0);
+            }
+        });
+
+        logout_bt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //로그아웃 버튼 클릭 시 로그인 화면으로 돌아가기
+                System.out.println("로그아웃");
+
+            }
+        });
 
 
     }//생성자의 끝
@@ -183,10 +210,14 @@ public class StudentFrame extends JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
-        JPanel title = new JPanel();
-        JLabel lb_t = new JLabel();
-        title.add(lb_t);
-
+        //title north panel ==========
+        title = new JPanel();
+        lb_t = new JLabel();
+        JLabel lb_t2 = new JLabel();
+        title.add(lb_t2, BorderLayout.CENTER);
+        title.add(lb_t, BorderLayout.CENTER);
+        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        //NetBeans ===================
         JPanel jPanel1 = new JPanel();
         JTabbedPane jTabbedPane1 = new JTabbedPane();
         JPanel jPanel2 = new JPanel();
@@ -222,7 +253,7 @@ public class StudentFrame extends JFrame {
         ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/image.png"));
         Image scaledImage = originalIcon.getImage().getScaledInstance(52, 47, Image.SCALE_SMOOTH);
         jLabel2.setIcon(new ImageIcon(scaledImage));
-        lb_t.setIcon(new ImageIcon(scaledImage));
+        lb_t2.setIcon(new ImageIcon(scaledImage));
 
         jButton1.setText("정보 변경");
 
@@ -250,15 +281,20 @@ public class StudentFrame extends JFrame {
                                 .addGap(29, 29, 29))
         );
 
-        jLabel3.setText("e-mail :");
+        jLabel3.setText("mail :");
+        jLabel3.setFont(new Font("맑은 고딕",Font.BOLD,14));
 
         jLabel4.setText("이름 :");
+        jLabel4.setFont(new Font("맑은 고딕",Font.BOLD,14));
 
         jLabel5.setText("주소 :");
+        jLabel5.setFont(new Font("맑은 고딕",Font.BOLD,14));
 
         jLabel6.setText("학번 :");
+        jLabel6.setFont(new Font("맑은 고딕",Font.BOLD,14));
 
-        jLabel7.setText("전화번호 :");
+        jLabel7.setText(" ☎  :");
+        jLabel7.setFont(new Font("맑은 고딕",Font.BOLD,14));
 
 
         GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
@@ -376,11 +412,39 @@ public class StudentFrame extends JFrame {
                 jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(jTabbedPane1)
         );
+
+        // 추가로 로그아웃, 종료 버튼 생성
+
+        JPanel jPanel8 = new JPanel();
+        logout_bt = new JButton("로그아웃");
+        exit_bt = new JButton("종료");
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(logout_bt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                                .addComponent(exit_bt)
+                                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addContainerGap(205, Short.MAX_VALUE)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(exit_bt)
+                                        .addComponent(logout_bt))
+                                .addContainerGap())
+        );
+
+        jPanel2.add(jPanel8);
+
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(jPanel1, BorderLayout.CENTER);
-
-
         pack();
+
     }// </editor-fold>
 
 
@@ -396,11 +460,23 @@ public class StudentFrame extends JFrame {
 
             //학생카드의 label에 각각 알맞는 값을 지정해서 넣어줌.
             jLabel1.setText("2025 - " + stdvo.getStdno());
+            jLabel1.setFont(new Font("맑은 고딕",Font.BOLD,15));
+
             jLabel8.setText(stdvo.getStd_email());
+            jLabel8.setFont(new Font("맑은 고딕",Font.BOLD,15));
+
             jLabel9.setText(stdvo.getStd_name());
+            jLabel9.setFont(new Font("맑은 고딕",Font.BOLD,15));
+
             jLabel10.setText(stdvo.getStd_phone());
+            jLabel10.setFont(new Font("맑은 고딕",Font.BOLD,15));
+
             jLabel11.setText(stdvo.getStd_address());
+            jLabel11.setFont(new Font("맑은 고딕",Font.BOLD,15));
         }
+        lb_t.setText(stdvo.getStd_name() + "님의 마이페이지");
+        lb_t.setFont(new Font("맑은 고딕",Font.BOLD,25));
+
         ss.close();
 
     }
@@ -481,7 +557,7 @@ public class StudentFrame extends JFrame {
         SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
         SqlSession ss = factory.openSession();
         //========================= table2 생성 ==========================
-        col = new String[]{"강의코드","강의명", "강사명", "시험 이름", "응시 여부", "시험 보기(임시)"};
+        col = new String[]{"강의코드","강의명", "강사명", "시험 이름", "응시 여부", "시험 보기(버튼)"};
 
         test_list = ss.selectList("std.get_test", dummy.getStdno());
 
@@ -497,7 +573,7 @@ public class StudentFrame extends JFrame {
                 data[i][2] = vo.getAd_name(); //강사명 들어가야됨
                 data[i][3] = vo.getTest_name(); // 시험이름 들어가야됨
                 data[i][4] = "응시여부 임시"; //응시여부
-                data[i][5] = "임시 data"; //시험 보기? 모르겠다
+                data[i][5] = "시험 응시"; //시험 보기? 모르겠다
 
                 i++;
 
@@ -507,11 +583,17 @@ public class StudentFrame extends JFrame {
             System.out.println("test_list = null");
 
         }
+
         //JTable갱신
         jTable2.setModel(new DefaultTableModel(data, col)); //setModel 해주고
         jTable2.setDefaultEditor(Object.class, null); //테이블 수정을 막아줘야됨.
         ss.close();
 
+        // 버튼 column 생성
+        jTable2.getColumn("시험 보기(버튼)").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            JButton bt3 = new JButton(value.toString());
+            return bt3;
+        });
 
     }//search2 method의 끝
 //==================================================================================

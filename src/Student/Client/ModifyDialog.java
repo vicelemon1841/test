@@ -190,7 +190,7 @@ public class ModifyDialog extends JFrame {
         name_tf.setCaretColor(new Color(0, 0, 0, 0)); // 커서 제거
         name_tf.setDisabledTextColor(Color.BLACK); // 글자색 유지
 
-        stdno_tf.setText(vo.getStdno());
+        stdno_tf.setText("2025 -" + vo.getStdno());
         stdno_tf.setBackground(Color.LIGHT_GRAY);
         stdno_tf.setFocusable(false); //tab으로도 이동 불가
         stdno_tf.setCaretColor(new Color(0, 0, 0, 0)); // 커서 제거
