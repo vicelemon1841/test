@@ -1,8 +1,15 @@
 package Student.vo;
 
 public class stdVO {
-    private String stdno, std_name, std_address, std_email, std_phone;
+    private String stdno, std_name, std_address, std_email, std_phone, std_image;
 
+    public String getStd_image() {
+        return std_image;
+    }
+
+    public void setStd_image(String std_image) {
+        this.std_image = std_image;
+    }
 
     public String getStdno() {
         return stdno;

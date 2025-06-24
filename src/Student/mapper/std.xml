@@ -45,11 +45,18 @@
         WHERE stdno = #{stdno}
     </select>
     
-<!--    시험 응시 여부 -->
+    <!-- 시험 응시 여부 -->
     <select id="get_test_auth" resultType="Student.vo.stdVO" parameterType="String">
         SELECT stdno
         FROM std_anw_t
         WHERE test_idx = #{test_idx}
     </select>
+    <!-- 사진 변경 시 update -->
+    <select id="update_img" resultType="Student.vo.stdVO" parameterType="String">
+        UPDATE std_t
+        SET std_image = #{std_image}
+        WHERE stdno = #{stdno}
+    </select>
+
 
 </mapper>

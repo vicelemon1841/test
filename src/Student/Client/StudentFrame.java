@@ -14,6 +14,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
@@ -171,6 +173,32 @@ public class StudentFrame extends JFrame {
                 //textField에서 사진 경로를 삽입?
                 //창 띄워서 내 파일 -> 파일 내 전체 그림 띄우고 -> 그 중에서 택 1 하기
                 // jLabel2는 프로필 사진 (기본은 empty로 설정, 나머지는 고르기)
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+
+                    try (FileInputStream fis = new FileInputStream(selectedFile)) {
+                        // 이미지 읽고 스케일링
+                        byte[] imageBytes = fis.readAllBytes(); // Java 9 이상
+                        ImageIcon icon = new ImageIcon(imageBytes);
+                        Image scaledImage = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+
+                        // JLabel에 설정
+                        jLabel2.setIcon(new ImageIcon(scaledImage));
+
+                        // image 경로를 가져와서 table을 수정해줘야됨.
+                        update_image(selectedFile.getAbsolutePath());
+
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "이미지 불러오기 실패");
+                    }
+                }
+
+
 
             }
         });
@@ -255,7 +283,7 @@ public class StudentFrame extends JFrame {
         SqlSession ss = factory.openSession();
         stdvo = ss.selectOne("std.get_no", dummy.getStdno());
         if (stdvo != null) {
-            System.out.printf("%s, %s, %s, %s\n", stdvo.getStd_name(), stdvo.getStd_email(), stdvo.getStd_phone(), stdvo.getStd_address());
+            System.out.printf("%s, %s, %s, %s, 사진 : %s\n", stdvo.getStd_name(), stdvo.getStd_email(), stdvo.getStd_phone(), stdvo.getStd_address(), stdvo.getStd_image());
 
             //학생카드의 label에 각각 알맞는 값을 지정해서 넣어줌.
             jLabel1.setText("2025 - " + stdvo.getStdno());
@@ -276,12 +304,35 @@ public class StudentFrame extends JFrame {
         lb_t.setText(stdvo.getStd_name() + "님의 마이페이지");
         lb_t.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 
-
+        r.close();
         ss.close();
-
     }
     //학생 카드를 띄우는 메소드의 끝=========================================================================
 
+    //학생 프로필 사진 수정 메소드========================================================================== 수정해야됨
+    private void update_image(String str) throws IOException {
+        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
+
+        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
+        SqlSession ss = factory.openSession();
+
+        int idx = str.indexOf("images");
+        if (idx != -1) {
+            String shortPath = str.substring(idx); // → images\profile1.png
+            stdvo.setStd_image(shortPath);
+            System.out.println(shortPath);
+        } else {
+            System.out.println("images\\가 경로에 없습니다.");
+        }
+
+
+        ss.update("std.update_img", stdvo);
+        ss.commit();
+
+        r.close();
+        ss.close();
+    }
+    //학생 프로필 사진 수정 메소드==========================================================================
 
     //학생 카드 수정 메소드 ===============================================================================
     public void update_card(stdVO vo){
@@ -349,6 +400,7 @@ public class StudentFrame extends JFrame {
         jTable1.setRowHeight(30); // 테이블 셀 크기
         jTable1.setModel(new DefaultTableModel(data, col)); //setModel 해주고
         jTable1.setDefaultEditor(Object.class, null); //테이블 수정을 막아줘야됨.
+        r.close();
         ss.close();
         //==============================여기까지 table1===============================
     }//search함수의 끝
@@ -435,6 +487,7 @@ public class StudentFrame extends JFrame {
         jTable2.setRowHeight(30); // 테이블 셀 크기
         jTable2.setModel(new DefaultTableModel(data, col)); //setModel 해주고
         jTable2.setDefaultEditor(Object.class, null); //테이블 수정을 막아줘야됨.
+        r.close();
         ss.close();
 
         // 버튼 column 생성
@@ -504,11 +557,12 @@ public class StudentFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
-        //프로필 사진 ==============================================
         jPanel2.setLayout(new GridLayout(2, 2));
-        ImageIcon emptyIcon = new ImageIcon(getClass().getResource("/images/empty.png"));
-        Image scale = emptyIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-        jLabel2.setIcon(new ImageIcon(scale));
+
+        //프로필 사진 ==============================================
+//        ImageIcon emptyIcon = new ImageIcon(getClass().getResource("/images/empty.png"));
+//        Image scale = emptyIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+//        jLabel2.setIcon(new ImageIcon(scale));
 
         //title 로고 ==============================================
         ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/image.png"));
