@@ -19,7 +19,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,9 +26,9 @@ import java.util.List;
  *
  * @author 쌍용교육센터
  */
-public class Main extends JFrame {
+public class StudentFrame extends JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StudentFrame.class.getName());
 
     /**
      * Creates new form page1
@@ -53,7 +52,7 @@ public class Main extends JFrame {
     private JTable jTable1;
     private JTable jTable2;
     private JButton jButton1;
-    public Main() {
+    public StudentFrame() {
 //        m_bar = new JMenuBar();
 //        menu = new JMenu("로그아웃");
 ////        m_exit = new JMenuItem("로그아웃");
@@ -173,7 +172,7 @@ public class Main extends JFrame {
 
     public static void main(String args[]) {
 
-        new Main();
+        new StudentFrame();
     }//Main함수 끝
 
     /**
