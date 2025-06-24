@@ -15,13 +15,19 @@ import java.io.Reader;
 public class ModifyDialog extends JFrame {
     //회원 정보를 수정하는 Dialog
     stdVO vo;
+    StudentFrame parent;
     private JPanel north_p, p1, p2, p3, p4, p5, p6;
     private JLabel name_lb, stdno_lb, mail_lb, phone_lb, add_lb, title_lb;
     private JTextField name_tf, stdno_tf, mail_tf, phone_tf, add_tf;
     private JButton bt1, bt2;
 
-    public ModifyDialog(stdVO vo){
+    public ModifyDialog(stdVO vo, StudentFrame parent){
         this.vo = vo;
+        this.parent = parent;
+        
+        if(parent != null){
+            System.out.println("parent 연결 완료");
+        }
         //창 설정
         initComponents();
         this.setBounds(200,200,300,500);
@@ -43,6 +49,9 @@ public class ModifyDialog extends JFrame {
                 //stdvo를 이용해서 std table을 UPDATE 해주어야됨.
                 try {
                     update();
+                    JOptionPane.showMessageDialog(ModifyDialog.this,"저장 완료!");
+                    parent.update_card(vo);
+
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -84,7 +93,7 @@ public class ModifyDialog extends JFrame {
 
         ss.close();
     }
-
+    
 
 
     //화면 구성======================================================================

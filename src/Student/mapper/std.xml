@@ -44,5 +44,12 @@
         SET std_address = #{std_address}
         WHERE stdno = #{stdno}
     </select>
+    
+<!--    시험 응시 여부 -->
+    <select id="get_test_auth" resultType="Student.vo.stdVO" parameterType="String">
+        SELECT stdno
+        FROM std_anw_t
+        WHERE test_idx = #{test_idx}
+    </select>
 
 </mapper>
