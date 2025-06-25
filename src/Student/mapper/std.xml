@@ -17,6 +17,7 @@
         INNER JOIN lec_adm_t la ON ls.lec_no = la.lec_no
         WHERE s.stdno = #{stdno}
     </select>
+
     <!-- stdno를 통해서 시험 정보들 불러와야됨. -->
     <select id="get_test" resultType="Student.vo.testDTO" parameterType="String">
         SELECT ls.lec_name, t.test_name, ls.lec_no, la.ad_name, t.test_idx

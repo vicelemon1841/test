@@ -44,6 +44,8 @@ public class StudentFrame extends JFrame {
     private JLabel jLabel11;
     private JLabel jLabel8;
     private JLabel jLabel9;
+    private JLabel jLabel_birth;
+
     private JTable jTable1;
     private JTable jTable2;
     private JButton jButton1; //사진 변경 버튼
@@ -91,7 +93,7 @@ public class StudentFrame extends JFrame {
         //화면 구성
         initComponents();
 
-        this.setBounds(300, 100, 600, 700);
+        this.setBounds(300, 100, 900, 700);
         this.setVisible(true);
 
         try {
@@ -122,7 +124,6 @@ public class StudentFrame extends JFrame {
                     totalDTO vo = list.get(i); //선택된 행의 vo객체를 뽑아낸다.
 
                     if (vo != null) {
-                        System.out.println("vo is not null");
                         try {
                             lec_search(vo); //생성자 파라메터로 선택된 vo객체를 전달해줌.
                             new LecDialog(vo);
@@ -130,8 +131,6 @@ public class StudentFrame extends JFrame {
                             ex.printStackTrace();
                         }
                     }
-                    System.out.println("더블클릭 완료");
-//                    MyDialog md = new MyDialog(Main.this, true, vo);
                 }
             }
         });
@@ -219,6 +218,30 @@ public class StudentFrame extends JFrame {
                 }
             }
         });
+        // 시험 결과 확인 버튼 리스너
+        jTable2.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = jTable2.rowAtPoint(e.getPoint());
+                int col = jTable2.columnAtPoint(e.getPoint());
+
+                if (col == 4) { // 버튼 열
+                    String cellValue = jTable2.getValueAt(row, col).toString();
+
+                    if ("응시 완료(결과 확인)".equals(cellValue)) {
+                        // 응시 버튼이 활성화 된 경우에만 클릭할 수 있게 처리, 새 창 띄우기
+                        String test_name = jTable2.getValueAt(row, 3).toString();
+                        System.out.println("시험 이름 = " + test_name);
+                        JOptionPane.showMessageDialog(StudentFrame.this, test_name + " 시험 응시 완료");
+                        // 시험 결과 창 띄우기
+
+                        //....
+
+                        //
+                    }
+                }
+            }
+        });
+
 
         // 종료, 로그아웃 리스너 공통 정의
         ActionListener exitListener = new ActionListener() {
@@ -279,7 +302,7 @@ public class StudentFrame extends JFrame {
         SqlSession ss = factory.openSession();
         stdvo = ss.selectOne("std.get_no", dummy.getStdno());
         if (stdvo != null) {
-            System.out.printf("%s, %s, %s, %s, 사진 : %s\n", stdvo.getStd_name(), stdvo.getStd_email(), stdvo.getStd_phone(), stdvo.getStd_address(), stdvo.getStd_image());
+//            System.out.printf("%s, %s, %s, %s, 사진 : %s\n", stdvo.getStd_name(), stdvo.getStd_email(), stdvo.getStd_phone(), stdvo.getStd_address(), stdvo.getStd_image());
 
             //학생카드의 label에 각각 알맞는 값을 지정해서 넣어줌.
             jLabel1.setText("2025 - " + stdvo.getStdno());
@@ -294,8 +317,12 @@ public class StudentFrame extends JFrame {
             jLabel10.setText(stdvo.getStd_phone());
             jLabel10.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
-            jLabel11.setText(stdvo.getStd_address());
+            jLabel11.setText(stdvo.getStd_address()+"dddㄹㅇㄴㄴ러니런이ㅏ러이낭닢ㅇㄴㅇㄴㅇㅇㄴㅇㅇㄴㅇㄴㅇㄴㅇ");
             jLabel11.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+
+            jLabel_birth.setText("1999-09-14");
+            jLabel_birth.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+
 
             //프로필 사진
 
@@ -386,7 +413,7 @@ public class StudentFrame extends JFrame {
                 data[i][2] = vo.getAd_sdate(); // 개강일 들어가야됨
                 data[i][3] = vo.getLec_no(); // 강의 번호 들어가야됨
                 //임시출력
-                System.out.println(vo.getAd_sdate());
+//                System.out.println(vo.getAd_sdate());
                 i++;
 
             }
@@ -407,7 +434,7 @@ public class StudentFrame extends JFrame {
     //tabl1에서 더블클릭 시 정보를 띄우는 메소드==========================================
     private void lec_search(totalDTO vo) throws IOException {
         //임시 출력 확인
-        System.out.println(vo.getLec_no());
+//        System.out.println(vo.getLec_no());
 
         //이제 받아온 totalDTO객체의 lec_no를 이용해서 나머지 정보들을 출력
 
@@ -417,7 +444,7 @@ public class StudentFrame extends JFrame {
         if (lecVOList != null) {
 
             for (lecVO vo2 : lecVOList) {
-                System.out.printf("임시 출력: %s, %s, %s, %s, %s\n", vo2.getAd_name(), vo2.getLec_name(), vo2.getLec_sdate(), vo2.getLec_edate(), vo2.getLec_info());
+//                System.out.printf("임시 출력: %s, %s, %s, %s, %s\n", vo2.getAd_name(), vo2.getLec_name(), vo2.getLec_sdate(), vo2.getLec_edate(), vo2.getLec_info());
             }
         } else {
             System.out.println("lec list is null");
@@ -432,7 +459,7 @@ public class StudentFrame extends JFrame {
 
         SqlSession ss = factory.openSession();
         //========================= table2 생성 ==========================
-        col = new String[]{"강의코드", "강의명", "강사명", "시험 이름", "응시 여부", "시험 보기(버튼)"};
+        col = new String[]{"강의코드", "강의명", "강사명", "시험 이름", "응시 여부 및 결과", "시험 보기(버튼)"};
 
         test_list = ss.selectList("std.get_test", dummy.getStdno());
 
@@ -458,14 +485,14 @@ public class StudentFrame extends JFrame {
                     for (stdVO avo : auth_list) {
                         if (avo.getStdno().equalsIgnoreCase(dummy.getStdno())) {
                             //두 개의 학번이 같으면? -> 응시 완료
-                            data[i][4] = "응시 완료";
+                            data[i][4] = "응시 완료(결과 확인)";
                             data[i][5] = "응시 불가";
                             break;
                         }
                     }
                 } else {
-                    //auth_list 가 null인 경우도 응시 전?
-                    System.out.println("시험 응시 학생 없음");
+                    //auth_list 가 null인 경우는 시험이 존재하지 않음
+                    //애초에 시험 tab에 안띄워짐.
                 }
                 //================응시 여부==================
 
@@ -485,8 +512,7 @@ public class StudentFrame extends JFrame {
 //        r.close();
         ss.close();
 
-        // 버튼 column 생성
-
+        // 버튼 column 생성 (시험 응시 버튼)
         jTable2.getColumn("시험 보기(버튼)").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JButton bt3 = new JButton(value.toString());
             if ("시험 응시".equals(value)) {
@@ -499,6 +525,20 @@ public class StudentFrame extends JFrame {
                 label.setHorizontalAlignment(SwingConstants.CENTER); // 가운데 정렬도 가능
                 return label;
                 // 또는 new JLabel("") 하면 아무것도 안 나옴
+            }
+        });
+        // 버튼 column 생성 (점수 확인 버튼)
+        jTable2.getColumn("응시 여부 및 결과").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            JButton bt3 = new JButton(value.toString());
+            if ("응시 완료(결과 확인)".equals(value)) {
+                return bt3;
+            } else {
+                // 그냥 JLabel로 텍스트 출력 (버튼 아님)
+                JLabel label = new JLabel(value.toString());
+                label.setOpaque(true); // 배경색 설정을 위해 꼭 필요
+                label.setBackground(Color.LIGHT_GRAY); // 회색 배경
+                label.setHorizontalAlignment(SwingConstants.CENTER); // 가운데 정렬도 가능
+                return label;
             }
         });
 
@@ -542,6 +582,7 @@ public class StudentFrame extends JFrame {
         jLabel9 = new JLabel();
         jLabel10 = new JLabel();
         jLabel11 = new JLabel();
+        jLabel_birth = new JLabel();
         JPanel jPanel5 = new JPanel();
         JScrollPane jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
@@ -595,6 +636,8 @@ public class StudentFrame extends JFrame {
                                         .addGap(48, 48, 48)))
         );
 
+        JLabel birth_lb = new JLabel("생년월일 :");
+        birth_lb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
         jLabel3.setText("mail :");
         jLabel3.setFont(new Font("맑은 고딕", Font.BOLD, 14));
@@ -612,6 +655,63 @@ public class StudentFrame extends JFrame {
         jLabel7.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
 
+        //===============================================학생 카드 영역 패널=====================================================
+//        GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
+//        jPanel7.setLayout(jPanel7Layout);
+//        jPanel7Layout.setHorizontalGroup(
+//                jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel11, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel8, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel9, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel10, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)))
+//                                .addContainerGap())
+//        );
+//        jPanel7Layout.setVerticalGroup(
+//                jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap(10, Short.MAX_VALUE)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel9, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel8, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel10, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addGap(7, 7, 7)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel11, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addContainerGap())
+//        );
+
+        //==
         GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -635,6 +735,11 @@ public class StudentFrame extends JFrame {
                                                 .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jLabel9, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                                .addComponent(birth_lb, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGap(30)
+                                                .addComponent(jLabel_birth, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                                         .addGroup(jPanel7Layout.createSequentialGroup()
                                                 .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -662,11 +767,18 @@ public class StudentFrame extends JFrame {
                                         .addComponent(jLabel10, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
                                 .addGap(7, 7, 7)
                                 .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(birth_lb, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel_birth, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel11, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap())
         );
 
+
+        //==
+        //================================================================================================================
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
