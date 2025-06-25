@@ -44,6 +44,8 @@ public class StudentFrame extends JFrame {
     private JLabel jLabel11;
     private JLabel jLabel8;
     private JLabel jLabel9;
+    private JLabel jLabel_birth;
+
     private JTable jTable1;
     private JTable jTable2;
     private JButton jButton1; //사진 변경 버튼
@@ -91,7 +93,7 @@ public class StudentFrame extends JFrame {
         //화면 구성
         initComponents();
 
-        this.setBounds(300, 100, 600, 700);
+        this.setBounds(300, 100, 900, 700);
         this.setVisible(true);
 
         try {
@@ -294,8 +296,12 @@ public class StudentFrame extends JFrame {
             jLabel10.setText(stdvo.getStd_phone());
             jLabel10.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
-            jLabel11.setText(stdvo.getStd_address());
+            jLabel11.setText(stdvo.getStd_address()+"dddㄹㅇㄴㄴ러니런이ㅏ러이낭닢ㅇㄴㅇㄴㅇㅇㄴㅇㅇㄴㅇㄴㅇㄴㅇ");
             jLabel11.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+
+            jLabel_birth.setText("1999-09-14");
+            jLabel_birth.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+
 
             //프로필 사진
 
@@ -542,6 +548,7 @@ public class StudentFrame extends JFrame {
         jLabel9 = new JLabel();
         jLabel10 = new JLabel();
         jLabel11 = new JLabel();
+        jLabel_birth = new JLabel();
         JPanel jPanel5 = new JPanel();
         JScrollPane jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
@@ -595,6 +602,8 @@ public class StudentFrame extends JFrame {
                                         .addGap(48, 48, 48)))
         );
 
+        JLabel birth_lb = new JLabel("생년월일 :");
+        birth_lb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
         jLabel3.setText("mail :");
         jLabel3.setFont(new Font("맑은 고딕", Font.BOLD, 14));
@@ -612,6 +621,63 @@ public class StudentFrame extends JFrame {
         jLabel7.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
 
+        //===============================================학생 카드 영역 패널=====================================================
+//        GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
+//        jPanel7.setLayout(jPanel7Layout);
+//        jPanel7Layout.setHorizontalGroup(
+//                jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel11, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel8, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel9, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+//                                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                                .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(jLabel10, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)))
+//                                .addContainerGap())
+//        );
+//        jPanel7Layout.setVerticalGroup(
+//                jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap(10, Short.MAX_VALUE)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel9, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel8, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel10, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addGap(7, 7, 7)
+//                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//                                        .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+//                                        .addComponent(jLabel11, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+//                                .addContainerGap())
+//        );
+
+        //==
         GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -635,6 +701,11 @@ public class StudentFrame extends JFrame {
                                                 .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jLabel9, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                                .addComponent(birth_lb, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+//                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGap(30)
+                                                .addComponent(jLabel_birth, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                                         .addGroup(jPanel7Layout.createSequentialGroup()
                                                 .addComponent(jLabel7, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -662,11 +733,18 @@ public class StudentFrame extends JFrame {
                                         .addComponent(jLabel10, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
                                 .addGap(7, 7, 7)
                                 .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(birth_lb, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel_birth, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel11, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap())
         );
 
+
+        //==
+        //================================================================================================================
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
