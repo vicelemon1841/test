@@ -31,9 +31,6 @@ public class StudentFrame extends JFrame {
     /**
      * Creates new form page1
      */
-    JMenuBar m_bar;
-    JMenuItem m_exit;
-    JMenu menu;
 
     //============================
     String data[][];
@@ -59,8 +56,14 @@ public class StudentFrame extends JFrame {
     JLabel lb_t;
     JPanel title;
 
-    public StudentFrame() {
+    Reader r;
+    SqlSessionFactory factory;
 
+    public StudentFrame(String stdno) throws IOException {
+
+        r = Resources.getResourceAsReader("Student/config/conf.xml");
+        factory = new SqlSessionFactoryBuilder().build(r);
+        
         //======================= 화면 구성
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -68,7 +71,8 @@ public class StudentFrame extends JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         //===========================dummyData 생성 =================
-        dummy = new dummyStd("3"); //임시 학번: 3 , 삼지매, 010-3333-3333,....
+        dummy = new dummyStd(stdno); //임시 학번: 3 , 삼지매, 010-3333-3333,....
+        // 로그인 -> member_t에서 stdno 가져와야됨 (생성자 파라메터로 넘겨주기?)
 
 
         //==========================================================
@@ -160,9 +164,7 @@ public class StudentFrame extends JFrame {
                 // 새 다이어그램 띄우기, 정보 수정. (이름, 학번은 고정.)
                 if (stdvo != null) {
                     ModifyDialog md = new ModifyDialog(stdvo, StudentFrame.this);
-
                 }
-
             }
         });
         //사진 변경 버튼 리스너
@@ -170,8 +172,7 @@ public class StudentFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //사진 변경 작업 수행
-                //textField에서 사진 경로를 삽입?
-                //창 띄워서 내 파일 -> 파일 내 전체 그림 띄우고 -> 그 중에서 택 1 하기
+                //Filestream이용
                 // jLabel2는 프로필 사진 (기본은 empty로 설정, 나머지는 고르기)
                 JFileChooser fileChooser = new JFileChooser();
                 int result = fileChooser.showOpenDialog(null);
@@ -180,26 +181,22 @@ public class StudentFrame extends JFrame {
                     File selectedFile = fileChooser.getSelectedFile();
 
                     try (FileInputStream fis = new FileInputStream(selectedFile)) {
-                        // 이미지 읽고 스케일링
-                        byte[] imageBytes = fis.readAllBytes(); // Java 9 이상
+                        // 이미지 읽고 byte[]에 저장
+                        byte[] imageBytes = fis.readAllBytes();
                         ImageIcon icon = new ImageIcon(imageBytes);
                         Image scaledImage = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
                         // JLabel에 설정
                         jLabel2.setIcon(new ImageIcon(scaledImage));
 
-                        // image 경로를 가져와서 table을 수정해줘야됨.
+                        // image 수정 메소드 호출
                         update_image(selectedFile.getAbsolutePath());
-
 
                     } catch (IOException ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(null, "이미지 불러오기 실패");
                     }
                 }
-
-
-
             }
         });
 
@@ -252,9 +249,10 @@ public class StudentFrame extends JFrame {
 
     }//생성자의 끝
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
 
-        new StudentFrame();
+        new StudentFrame("3");
+
     }//Main함수 끝
 
     /**
@@ -277,9 +275,7 @@ public class StudentFrame extends JFrame {
 
     //학생 카드를 띄우는 메소드========================================================================
     private void set_card() throws IOException {
-        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
 
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
         SqlSession ss = factory.openSession();
         stdvo = ss.selectOne("std.get_no", dummy.getStdno());
         if (stdvo != null) {
@@ -300,25 +296,35 @@ public class StudentFrame extends JFrame {
 
             jLabel11.setText(stdvo.getStd_address());
             jLabel11.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+
+            //프로필 사진
+
+            if(stdvo.getStd_image() == null){
+                ImageIcon emptyIcon = new ImageIcon(getClass().getResource("/images/empty.png"));
+                Image scale = emptyIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                jLabel2.setIcon(new ImageIcon(scale));
+            } else {
+                ImageIcon profile_img = new ImageIcon(getClass().getResource(stdvo.getStd_image()));
+                Image scale = profile_img.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                jLabel2.setIcon(new ImageIcon(scale));
+            }
         }
         lb_t.setText(stdvo.getStd_name() + "님의 마이페이지");
         lb_t.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 
-        r.close();
         ss.close();
     }
     //학생 카드를 띄우는 메소드의 끝=========================================================================
 
     //학생 프로필 사진 수정 메소드========================================================================== 수정해야됨
     private void update_image(String str) throws IOException {
-        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
 
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
         SqlSession ss = factory.openSession();
 
-        int idx = str.indexOf("images");
+        int idx = str.indexOf("\\images");
         if (idx != -1) {
             String shortPath = str.substring(idx); // → images\profile1.png
+            shortPath = shortPath.replace("\\","/");
             stdvo.setStd_image(shortPath);
             System.out.println(shortPath);
         } else {
@@ -329,7 +335,6 @@ public class StudentFrame extends JFrame {
         ss.update("std.update_img", stdvo);
         ss.commit();
 
-        r.close();
         ss.close();
     }
     //학생 프로필 사진 수정 메소드==========================================================================
@@ -362,16 +367,10 @@ public class StudentFrame extends JFrame {
 
     //table1을 출력하는 메소드============================================================================
     private void search() throws IOException {
-
-
-        //config와 연결
-        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
-
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
-        SqlSession ss = factory.openSession();
+        
         //==========================================여기서부터 table1==========================
-
-
+        SqlSession ss = factory.openSession();
+        
         list = ss.selectList("std.get_total", dummy.getStdno());
 
         if (list != null && list.size() > 0) { //DB로부터 받은 data가 있을 때만 수행
@@ -410,31 +409,27 @@ public class StudentFrame extends JFrame {
         //임시 출력 확인
         System.out.println(vo.getLec_no());
 
-        //이제 받아온 totalDTO객체의 lec_no를 이용해서 나머지 정보들을 출력해줘야된다.
-        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
+        //이제 받아온 totalDTO객체의 lec_no를 이용해서 나머지 정보들을 출력
 
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
         SqlSession ss = factory.openSession();
         List<lecVO> lecVOList = ss.selectList("lec.get_lec", vo.getLec_no());
 
         if (lecVOList != null) {
 
             for (lecVO vo2 : lecVOList) {
-                System.out.printf("%s, %s, %s, %s, %s\n", vo2.getAd_name(), vo2.getLec_name(), vo2.getLec_sdate(), vo2.getLec_edate(), vo2.getLec_info());
+                System.out.printf("임시 출력: %s, %s, %s, %s, %s\n", vo2.getAd_name(), vo2.getLec_name(), vo2.getLec_sdate(), vo2.getLec_edate(), vo2.getLec_info());
             }
         } else {
             System.out.println("lec list is null");
         }
+        ss.close();
     }
     //tabl1에서 더블클릭 시 정보를 띄우는 메소드==========================================
 
 
     //table2를 생성하는 메소드=====================================================
     private void search2() throws IOException {
-        //config와 연결
-        Reader r = Resources.getResourceAsReader("Student/config/conf.xml");
 
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(r);
         SqlSession ss = factory.openSession();
         //========================= table2 생성 ==========================
         col = new String[]{"강의코드", "강의명", "강사명", "시험 이름", "응시 여부", "시험 보기(버튼)"};
@@ -487,7 +482,7 @@ public class StudentFrame extends JFrame {
         jTable2.setRowHeight(30); // 테이블 셀 크기
         jTable2.setModel(new DefaultTableModel(data, col)); //setModel 해주고
         jTable2.setDefaultEditor(Object.class, null); //테이블 수정을 막아줘야됨.
-        r.close();
+//        r.close();
         ss.close();
 
         // 버튼 column 생성
@@ -559,11 +554,6 @@ public class StudentFrame extends JFrame {
 
         jPanel2.setLayout(new GridLayout(2, 2));
 
-        //프로필 사진 ==============================================
-//        ImageIcon emptyIcon = new ImageIcon(getClass().getResource("/images/empty.png"));
-//        Image scale = emptyIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-//        jLabel2.setIcon(new ImageIcon(scale));
-
         //title 로고 ==============================================
         ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/image.png"));
         Image scaledImage = originalIcon.getImage().getScaledInstance(52, 47, Image.SCALE_SMOOTH);
@@ -605,31 +595,6 @@ public class StudentFrame extends JFrame {
                                         .addGap(48, 48, 48)))
         );
 
-
-        //
-//        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-//        jPanel4.setLayout(jPanel4Layout);
-//        jPanel4Layout.setHorizontalGroup(
-//                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//                        .addGroup(jPanel4Layout.createSequentialGroup()
-//                                .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//                                        .addGroup(jPanel4Layout.createSequentialGroup()
-//                                                .addGap(40, 40, 40)
-//                                                .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE))
-//                                        .addGroup(jPanel4Layout.createSequentialGroup()
-//                                                .addGap(72, 72, 72)
-//                                                .addComponent(jButton1)))
-//                                .addContainerGap(38, Short.MAX_VALUE))
-//        );
-//        jPanel4Layout.setVerticalGroup(
-//                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-//                                .addGap(28, 28, 28)
-//                                .addComponent(jLabel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-//                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-//                                .addComponent(jButton1)
-//                                .addGap(29, 29, 29))
-//        );
 
         jLabel3.setText("mail :");
         jLabel3.setFont(new Font("맑은 고딕", Font.BOLD, 14));
@@ -720,7 +685,6 @@ public class StudentFrame extends JFrame {
         jPanel2.add(jPanel3);
 
         jTabbedPane1.addTab("학생 카드", jPanel2);
-
 
         jScrollPane1.setViewportView(jTable1);
 
