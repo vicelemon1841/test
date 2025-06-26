@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
@@ -65,7 +67,7 @@ public class StudentFrame extends JFrame {
 
         r = Resources.getResourceAsReader("Student/config/conf.xml");
         factory = new SqlSessionFactoryBuilder().build(r);
-        
+        r.close();
         //======================= 화면 구성
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -190,8 +192,24 @@ public class StudentFrame extends JFrame {
 
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
+                    // PC에 맞게 destFile 경로를 수정해야됨 ========================================
+                    File destFile = new File("C:/Users/쌍용교육센터/Desktop/project/Student/src/images/" + selectedFile.getName());
+                    // 경로 수정하기 ==============================================================
+                    System.out.println(selectedFile.getName()); //임시 출력
+                    
+                    if(destFile == null){
+                        System.out.println("file is null, 경로 제대로 구현안됨");
+                    }
+                    try {
+                        Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("파일 복사 완료!"); //임시 출력
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
 
-                    try (FileInputStream fis = new FileInputStream(selectedFile)) {
+                    //
+
+                    try (FileInputStream fis = new FileInputStream(destFile)) {
                         // 이미지 읽고 byte[]에 저장
                         byte[] imageBytes = fis.readAllBytes();
                         ImageIcon icon = new ImageIcon(imageBytes);
@@ -201,7 +219,7 @@ public class StudentFrame extends JFrame {
                         jLabel2.setIcon(new ImageIcon(scaledImage));
 
                         // image 수정 메소드 호출
-                        update_image(selectedFile.getAbsolutePath());
+                        update_image(destFile.getAbsolutePath());
 
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -332,7 +350,7 @@ public class StudentFrame extends JFrame {
             jLabel11.setText(stdvo.getStd_address()+"dddㄹㅇㄴㄴ러니런이ㅏ러이낭닢ㅇㄴㅇㄴㅇㅇㄴㅇㅇㄴㅇㄴㅇㄴㅇ");
             jLabel11.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
-            jLabel_birth.setText("1999-09-14");
+            jLabel_birth.setText("");
             jLabel_birth.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
 
@@ -365,11 +383,10 @@ public class StudentFrame extends JFrame {
             String shortPath = str.substring(idx); // → images\profile1.png
             shortPath = shortPath.replace("\\","/");
             stdvo.setStd_image(shortPath);
-            System.out.println(shortPath);
+            System.out.println("img 경로: " + shortPath);
         } else {
             System.out.println("images\\가 경로에 없습니다.");
         }
-
 
         ss.update("std.update_img", stdvo);
         ss.commit();
