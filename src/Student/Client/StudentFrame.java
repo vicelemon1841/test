@@ -72,6 +72,18 @@ public class StudentFrame extends JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
+//        // 테마 설정 가장 먼저
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         //===========================dummyData 생성 =================
         dummy = new dummyStd(stdno); //임시 학번: 3 , 삼지매, 010-3333-3333,....
         // 로그인 -> member_t에서 stdno 가져와야됨 (생성자 파라메터로 넘겨주기?)
@@ -492,7 +504,8 @@ public class StudentFrame extends JFrame {
                     }
                 } else {
                     //auth_list 가 null인 경우는 시험이 존재하지 않음
-                    //애초에 시험 tab에 안띄워짐.
+                    //lec_no가 test_t에 없으면 시험이 존재하지 않음
+
                 }
                 //================응시 여부==================
 
