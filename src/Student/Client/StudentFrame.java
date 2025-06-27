@@ -192,9 +192,8 @@ public class StudentFrame extends JFrame {
 
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                    // PC에 맞게 destFile 경로를 수정해야됨 ========================================
-                    File destFile = new File("C:/Users/쌍용교육센터/Desktop/project/Student/src/images/" + selectedFile.getName());
-                    // 경로 수정하기 ==============================================================
+                    // destFile 경로를 현재 main파일 기준 상대경로로 해주기 (images 패키지로 복사되게끔)
+                    File destFile = new File("src/images/" + selectedFile.getName());
                     System.out.println(selectedFile.getName()); //임시 출력
                     
                     if(destFile == null){
@@ -243,7 +242,9 @@ public class StudentFrame extends JFrame {
                         // 응시 버튼이 활성화 된 경우에만 클릭할 수 있게 처리, 새 창 띄우기
                         String test_name = jTable2.getValueAt(row, 3).toString();
                         System.out.println("시험 이름 = " + test_name);
-                        JOptionPane.showMessageDialog(StudentFrame.this, test_name + " 시험 응시 시작");
+                        
+                        // 시험 응시 시작
+                        // 시험 응시 창 띄우기 -> dialog 내에서 table 초기화
                     }
                 }
             }
@@ -271,7 +272,6 @@ public class StudentFrame extends JFrame {
                 }
             }
         });
-
 
         // 종료, 로그아웃 리스너 공통 정의
         ActionListener exitListener = new ActionListener() {
@@ -332,7 +332,6 @@ public class StudentFrame extends JFrame {
         SqlSession ss = factory.openSession();
         stdvo = ss.selectOne("std.get_no", dummy.getStdno());
         if (stdvo != null) {
-//            System.out.printf("%s, %s, %s, %s, 사진 : %s\n", stdvo.getStd_name(), stdvo.getStd_email(), stdvo.getStd_phone(), stdvo.getStd_address(), stdvo.getStd_image());
 
             //학생카드의 label에 각각 알맞는 값을 지정해서 넣어줌.
             jLabel1.setText("2025 - " + stdvo.getStdno());
@@ -347,7 +346,7 @@ public class StudentFrame extends JFrame {
             jLabel10.setText(stdvo.getStd_phone());
             jLabel10.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
-            jLabel11.setText(stdvo.getStd_address()+"dddㄹㅇㄴㄴ러니런이ㅏ러이낭닢ㅇㄴㅇㄴㅇㅇㄴㅇㅇㄴㅇㄴㅇㄴㅇ");
+            jLabel11.setText(stdvo.getStd_address());
             jLabel11.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 
             jLabel_birth.setText("");
